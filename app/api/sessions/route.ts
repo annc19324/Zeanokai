@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
       query += ' AND ' + conditions.join(' AND ');
     }
 
-    query += ' ORDER BY session_date DESC, id DESC';
+    query += ' ORDER BY session_date ASC, id ASC';
 
     // Execute query with raw interpolation for serverless sql
     // Using neon sql template / query parameterization:
