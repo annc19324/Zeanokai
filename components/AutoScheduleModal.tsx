@@ -35,8 +35,8 @@ export default function AutoScheduleModal({
   const [schedules, setSchedules] = useState<RecurringSchedule[]>([]);
   const [studentName, setStudentName] = useState('');
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
-  const [fee, setFee] = useState<number>(200000);
-  const [feeInput, setFeeInput] = useState('200000');
+  const [fee, setFee] = useState<number>(0);
+  const [feeInput, setFeeInput] = useState('');
   const [notes, setNotes] = useState('');
 
   const [targetMonth, setTargetMonth] = useState(currentMonth || '11');

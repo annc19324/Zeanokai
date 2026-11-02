@@ -34,13 +34,37 @@ export default function Home() {
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [isAutoModalOpen, setIsAutoModalOpen] = useState(false);
 
-  // Khởi tạo mặc định là tháng trước tháng hiện tại & tự động đồng bộ buổi học hôm nay nếu có lịch
+  // Khởi tạo: Đọc lựa chọn lần cuối từ localStorage, nếu chưa có thì lấy tháng trước tháng hiện tại
   useEffect(() => {
-    const defaultMonthInfo = getPreviousMonthInfo();
+    let initialMonth = '';
+    let initialYear = '';
+    let initialStudent = 'all';
+
+    const savedFilter = localStorage.getItem('zeanokai_last_filter');
+    if (savedFilter) {
+      try {
+        const parsed = JSON.parse(savedFilter);
+        if (parsed.month && parsed.year) {
+          initialMonth = parsed.month;
+          initialYear = parsed.year;
+          initialStudent = parsed.student || 'all';
+        }
+      } catch (e) {
+        console.error('Error parsing saved filter:', e);
+      }
+    }
+
+    if (!initialMonth || !initialYear) {
+      const defaultMonthInfo = getPreviousMonthInfo();
+      initialMonth = defaultMonthInfo.month;
+      initialYear = defaultMonthInfo.year;
+    }
+
     setFilter((prev) => ({
       ...prev,
-      month: defaultMonthInfo.month,
-      year: defaultMonthInfo.year,
+      month: initialMonth,
+      year: initialYear,
+      student: initialStudent,
     }));
     setIsClientReady(true);
 
@@ -55,6 +79,20 @@ export default function Home() {
       })
       .catch((err) => console.error('Auto sync today error:', err));
   }, []);
+
+  // Lưu lựa chọn tháng/năm/học sinh lần cuối vào localStorage
+  useEffect(() => {
+    if (isClientReady && filter.month && filter.year) {
+      localStorage.setItem(
+        'zeanokai_last_filter',
+        JSON.stringify({
+          month: filter.month,
+          year: filter.year,
+          student: filter.student,
+        })
+      );
+    }
+  }, [filter.month, filter.year, filter.student, isClientReady]);
 
   // Tải danh sách tên học sinh để lọc
   const fetchStudentList = async () => {

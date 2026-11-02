@@ -22,8 +22,8 @@ export default function SessionModal({
 }: SessionModalProps) {
   const [studentName, setStudentName] = useState('');
   const [sessionDate, setSessionDate] = useState('');
-  const [fee, setFee] = useState<number>(200000);
-  const [feeInput, setFeeInput] = useState('200000');
+  const [fee, setFee] = useState<number>(0);
+  const [feeInput, setFeeInput] = useState('');
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -39,8 +39,8 @@ export default function SessionModal({
     } else {
       const today = new Date().toISOString().split('T')[0];
       setSessionDate(today);
-      setFee(200000);
-      setFeeInput('200000');
+      setFee(0);
+      setFeeInput('');
       setNotes('');
     }
     setErrorMessage('');

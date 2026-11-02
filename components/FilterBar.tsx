@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, Calendar, RotateCcw } from 'lucide-react';
+import { Search, Calendar, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { SessionFilter } from '@/lib/types';
 import { getPreviousMonthInfo, getCurrentMonthInfo } from '@/lib/utils';
 
@@ -28,6 +28,7 @@ export default function FilterBar({
   const isCurMonthActive = curMonth.month && filter.month === curMonth.month && filter.year === curMonth.year;
   const isAllTimeActive = filter.month === 'all' && filter.year === 'all';
 
+  // Chuyển sang tháng trước của tháng hiện tại (Mặc định)
   const setPreviousMonth = () => {
     const p = getPreviousMonthInfo();
     setFilter((prev) => ({
@@ -37,6 +38,7 @@ export default function FilterBar({
     }));
   };
 
+  // Chuyển sang tháng này
   const setCurrentMonth = () => {
     const c = getCurrentMonthInfo();
     setFilter((prev) => ({
@@ -46,11 +48,50 @@ export default function FilterBar({
     }));
   };
 
+  // Xem tất cả các tháng
   const setAllMonths = () => {
     setFilter((prev) => ({
       ...prev,
       month: 'all',
       year: 'all',
+    }));
+  };
+
+  // Nút lùi 1 tháng gọn lẹ (◀)
+  const handlePrevMonthStep = () => {
+    const baseMonth = filter.month === 'all' || !filter.month ? parseInt(prevMonth.month || '10', 10) : parseInt(filter.month, 10);
+    const baseYear = filter.year === 'all' || !filter.year ? parseInt(prevMonth.year || '2026', 10) : parseInt(filter.year, 10);
+
+    let nextM = baseMonth - 1;
+    let nextY = baseYear;
+    if (nextM < 1) {
+      nextM = 12;
+      nextY -= 1;
+    }
+
+    setFilter((prev) => ({
+      ...prev,
+      month: nextM.toString(),
+      year: nextY.toString(),
+    }));
+  };
+
+  // Nút tiến 1 tháng gọn lẹ (▶)
+  const handleNextMonthStep = () => {
+    const baseMonth = filter.month === 'all' || !filter.month ? parseInt(prevMonth.month || '10', 10) : parseInt(filter.month, 10);
+    const baseYear = filter.year === 'all' || !filter.year ? parseInt(prevMonth.year || '2026', 10) : parseInt(filter.year, 10);
+
+    let nextM = baseMonth + 1;
+    let nextY = baseYear;
+    if (nextM > 12) {
+      nextM = 1;
+      nextY += 1;
+    }
+
+    setFilter((prev) => ({
+      ...prev,
+      month: nextM.toString(),
+      year: nextY.toString(),
     }));
   };
 
@@ -67,9 +108,30 @@ export default function FilterBar({
 
   return (
     <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm space-y-3">
-      {/* Nút chọn nhanh tháng & Tìm kiếm */}
+      {/* Hàng 1: Di chuyển qua các tháng gọn lẹ & Tìm kiếm */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
+          {/* Cụm nút di chuyển qua các tháng gọn lẹ: [ ◀ ] Tháng M/YYYY [ ▶ ] */}
+          <div className="flex items-center rounded-lg border border-slate-300 bg-slate-50 overflow-hidden shadow-xs">
+            <button
+              onClick={handlePrevMonthStep}
+              className="px-2 py-1.5 hover:bg-slate-200 text-slate-700 transition-colors"
+              title="Lùi về 1 tháng trước"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <span className="px-3 py-1 font-bold text-xs sm:text-sm text-blue-700 whitespace-nowrap border-x border-slate-300 bg-white">
+              {filter.month === 'all' ? 'Tất cả' : `Tháng ${filter.month}/${filter.year}`}
+            </span>
+            <button
+              onClick={handleNextMonthStep}
+              className="px-2 py-1.5 hover:bg-slate-200 text-slate-700 transition-colors"
+              title="Tiến sang 1 tháng sau"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
           {/* Nút Tháng trước - Mặc định */}
           <button
             onClick={setPreviousMonth}
@@ -81,7 +143,6 @@ export default function FilterBar({
           >
             <Calendar className="w-3.5 h-3.5" />
             <span>Tháng trước {prevMonth.month ? `(T${prevMonth.month}/${prevMonth.year})` : ''}</span>
-            <span className="text-[10px] bg-black/10 px-1 py-0.2 rounded font-normal">Mặc định</span>
           </button>
 
           {/* Nút Tháng này */}
@@ -109,7 +170,7 @@ export default function FilterBar({
           </button>
         </div>
 
-        {/* Tìm kiếm */}
+        {/* Ô Tìm kiếm (Đã bỏ placeholder) */}
         <div className="relative min-w-[200px] sm:w-64">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -121,7 +182,7 @@ export default function FilterBar({
         </div>
       </div>
 
-      {/* Bộ lọc chi tiết: Tháng, Năm, Học sinh */}
+      {/* Hàng 2: Bộ lọc chi tiết */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-2.5 border-t border-slate-100 text-xs">
         <div>
           <label className="block text-[11px] font-medium text-slate-500 mb-1">

@@ -23,7 +23,7 @@ export default function PrintReportModal({
   const [adjustmentType, setAdjustmentType] = useState<'-' | '+'>('-');
   const [adjustmentInput, setAdjustmentInput] = useState<string>('');
   const [adjustmentAmount, setAdjustmentAmount] = useState<number>(0);
-  const [adjustmentReason, setAdjustmentReason] = useState<string>('Tháng trước chuyển thừa');
+  const [adjustmentReason, setAdjustmentReason] = useState<string>('');
 
   if (!isOpen) return null;
 
@@ -40,7 +40,7 @@ export default function PrintReportModal({
   const resetAdjustment = () => {
     setAdjustmentInput('');
     setAdjustmentAmount(0);
-    setAdjustmentReason('Tháng trước chuyển thừa');
+    setAdjustmentReason('');
   };
 
   const students = Array.from(new Set(sessions.map((s) => s.student_name)));
@@ -218,7 +218,7 @@ export default function PrintReportModal({
                         Tổng học phí ({filteredSessions.length} buổi): {formatVND(totalFee)}
                       </span>
                       <span>
-                        {adjustmentType === '-' ? 'Trừ' : 'Cộng'}: {adjustmentReason ? `(${adjustmentReason})` : ''} {adjustmentType} {formatVND(adjustmentAmount)}
+                        {adjustmentType === '-' ? 'Trừ' : 'Cộng'}{adjustmentReason ? ` (${adjustmentReason})` : ''}: {adjustmentType} {formatVND(adjustmentAmount)}
                       </span>
                       <span>
                         TỔNG THANH TOÁN: {formatVND(finalAmount)}
