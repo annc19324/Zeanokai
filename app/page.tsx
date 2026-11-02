@@ -6,6 +6,7 @@ import FilterBar from '@/components/FilterBar';
 import SessionTable from '@/components/SessionTable';
 import SessionModal from '@/components/SessionModal';
 import PrintReportModal from '@/components/PrintReportModal';
+import AutoScheduleModal from '@/components/AutoScheduleModal';
 import { TutoringSession, SessionFilter } from '@/lib/types';
 import { getPreviousMonthInfo } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
@@ -31,6 +32,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSession, setEditingSession] = useState<TutoringSession | null>(null);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+  const [isAutoModalOpen, setIsAutoModalOpen] = useState(false);
 
   // Khởi tạo mặc định là tháng trước tháng hiện tại
   useEffect(() => {
@@ -91,7 +93,7 @@ export default function Home() {
     }
   }, [fetchSessions, isClientReady]);
 
-  // Lưu buổi dạy
+  // Lưu buổi dạy (Thêm mới hoặc Cập nhật buổi đã tồn tại)
   const handleSaveSession = async (sessionData: Partial<TutoringSession>): Promise<boolean> => {
     try {
       if (sessionData.id) {
@@ -154,6 +156,7 @@ export default function Home() {
           setIsModalOpen(true);
         }}
         onOpenPrintModal={() => setIsPrintModalOpen(true)}
+        onOpenAutoScheduleModal={() => setIsAutoModalOpen(true)}
       />
 
       {/* Main Content */}
@@ -213,6 +216,19 @@ export default function Home() {
         onClose={() => setIsPrintModalOpen(false)}
         sessions={sessions}
         currentFilterLabel={currentFilterLabel}
+      />
+
+      {/* Modal Cài Đặt Tự Động */}
+      <AutoScheduleModal
+        isOpen={isAutoModalOpen}
+        onClose={() => setIsAutoModalOpen(false)}
+        currentMonth={filter.month}
+        currentYear={filter.year}
+        onSessionsGenerated={() => {
+          fetchSessions();
+          fetchStudentList();
+        }}
+        studentList={studentList}
       />
     </div>
   );
