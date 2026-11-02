@@ -197,7 +197,6 @@ export default function AutoScheduleModal({
                   <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">Tên</label>
                   <input
                     type="text"
-                    placeholder="VD: Em Tuấn..."
                     value={studentName}
                     onChange={(e) => setStudentName(e.target.value)}
                     className="w-full px-2 py-1 text-xs bg-white border border-slate-200 rounded"
@@ -242,7 +241,6 @@ export default function AutoScheduleModal({
                 <label className="block text-[11px] font-semibold text-slate-700 mb-0.5">Ghi chú</label>
                 <input
                   type="text"
-                  placeholder="Ghi chú nội dung..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="w-full px-2 py-1 text-xs bg-white border border-slate-200 rounded"

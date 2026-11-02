@@ -20,7 +20,6 @@ export default function PrintReportModal({
 }: PrintReportModalProps) {
   const [selectedStudent, setSelectedStudent] = useState<string>('all');
 
-  // Điều chỉnh học phí (ví dụ: chuyển thừa tháng trước, cộng tiền sách...)
   const [adjustmentType, setAdjustmentType] = useState<'-' | '+'>('-');
   const [adjustmentInput, setAdjustmentInput] = useState<string>('');
   const [adjustmentAmount, setAdjustmentAmount] = useState<number>(0);
@@ -52,7 +51,6 @@ export default function PrintReportModal({
 
   const totalFee = filteredSessions.reduce((acc, curr) => acc + (Number(curr.fee) || 0), 0);
 
-  // Tính số tiền cuối cùng sau khi cộng / trừ
   const finalAmount = adjustmentType === '-'
     ? totalFee - adjustmentAmount
     : totalFee + adjustmentAmount;
@@ -65,7 +63,6 @@ export default function PrintReportModal({
       >
         {/* Header điều khiển (Ẩn khi in) */}
         <div className="px-3.5 py-2 border-b border-slate-200 no-print bg-slate-50 space-y-2">
-          {/* Hàng 1: Tiêu đề, chọn học sinh, nút In */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="font-bold text-slate-800 text-xs sm:text-sm">
@@ -104,11 +101,10 @@ export default function PrintReportModal({
             </div>
           </div>
 
-          {/* Hàng 2: Ô điều chỉnh tiền (chuyển thừa / thiếu tháng trước) */}
+          {/* Hàng điều chỉnh tiền - Bỏ placeholder */}
           <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200 text-xs">
             <span className="font-medium text-slate-600">Điều chỉnh:</span>
 
-            {/* Nút chọn - hoặc + */}
             <div className="flex rounded border border-slate-300 overflow-hidden bg-white">
               <button
                 type="button"
@@ -118,7 +114,7 @@ export default function PrintReportModal({
                     ? 'bg-rose-600 text-white'
                     : 'text-slate-600 hover:bg-slate-100'
                 }`}
-                title="Trừ bớt (do chuyển thừa)"
+                title="Trừ bớt"
               >
                 <Minus className="w-3 h-3" /> Trừ
               </button>
@@ -130,27 +126,21 @@ export default function PrintReportModal({
                     ? 'bg-emerald-600 text-white'
                     : 'text-slate-600 hover:bg-slate-100'
                 }`}
-                title="Cộng thêm (do nợ cũ/sách)"
+                title="Cộng thêm"
               >
                 <Plus className="w-3 h-3" /> Cộng
               </button>
             </div>
 
-            {/* Ô nhập số tiền */}
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="VD: 1200000"
-                value={adjustmentInput}
-                onChange={(e) => handleAmountChange(e.target.value)}
-                className="w-28 px-2 py-0.5 border border-slate-300 rounded text-xs font-bold text-slate-900 focus:outline-none"
-              />
-            </div>
-
-            {/* Ô nhập lý do */}
             <input
               type="text"
-              placeholder="Lý do (VD: Tháng trước chuyển thừa)"
+              value={adjustmentInput}
+              onChange={(e) => handleAmountChange(e.target.value)}
+              className="w-28 px-2 py-0.5 border border-slate-300 rounded text-xs font-bold text-slate-900 focus:outline-none"
+            />
+
+            <input
+              type="text"
               value={adjustmentReason}
               onChange={(e) => setAdjustmentReason(e.target.value)}
               className="flex-1 min-w-[150px] px-2 py-0.5 border border-slate-300 rounded text-xs text-slate-800 focus:outline-none"
@@ -171,7 +161,6 @@ export default function PrintReportModal({
 
         {/* Khung nội dung in phiếu - Gọn gàng không cần cuộn */}
         <div className="p-4 overflow-y-auto max-h-[76vh] bg-white text-slate-900 print:p-0">
-          {/* Tiêu đề phiếu: Chỉ cần ghi Tháng Năm */}
           <div className="text-center pb-2 mb-2 border-b border-slate-200">
             <h1 className="text-base font-extrabold uppercase text-slate-900 tracking-wide">
               {currentFilterLabel.toUpperCase()}
@@ -220,40 +209,29 @@ export default function PrintReportModal({
               ))}
             </tbody>
             <tfoot>
-              {/* Nếu có điều chỉnh thì hiển thị 3 dòng: Tổng HP, Điều chỉnh (+/-), và TỔNG THANH TOÁN */}
               {adjustmentAmount > 0 ? (
-                <>
-                  <tr className="border-t-2 border-slate-300 bg-slate-50 text-slate-700">
-                    <td colSpan={selectedStudent === 'all' ? 3 : 2} className="py-1.5 px-2 text-right border-r border-slate-300">
-                      Tổng học phí ({filteredSessions.length} buổi):
-                    </td>
-                    <td colSpan={2} className="py-1.5 px-2 font-semibold">
-                      {formatVND(totalFee)}
-                    </td>
-                  </tr>
-                  <tr className="border-t border-slate-200 bg-slate-50">
-                    <td colSpan={selectedStudent === 'all' ? 3 : 2} className="py-1.5 px-2 text-right border-r border-slate-300 font-medium">
-                      {adjustmentType === '-' ? 'Trừ' : 'Cộng'}: {adjustmentReason ? `(${adjustmentReason})` : ''}
-                    </td>
-                    <td colSpan={2} className={`py-1.5 px-2 font-bold ${adjustmentType === '-' ? 'text-rose-600' : 'text-emerald-600'}`}>
-                      {adjustmentType} {formatVND(adjustmentAmount)}
-                    </td>
-                  </tr>
-                  <tr className="border-t-2 border-slate-400 bg-slate-100 font-bold text-slate-900">
-                    <td colSpan={selectedStudent === 'all' ? 3 : 2} className="py-2 px-2 text-right uppercase border-r border-slate-300 text-xs">
-                      TỔNG THANH TOÁN:
-                    </td>
-                    <td colSpan={2} className="py-2 px-2 text-left font-black text-blue-700 text-sm">
-                      {formatVND(finalAmount)}
-                    </td>
-                  </tr>
-                </>
+                /* 3 cái trên cùng 1 dòng, cỡ chữ bằng nhau */
+                <tr className="border-t-2 border-slate-400 bg-slate-50 text-xs font-bold text-slate-900">
+                  <td colSpan={selectedStudent === 'all' ? 5 : 4} className="py-2.5 px-3">
+                    <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-bold">
+                      <span>
+                        Tổng học phí ({filteredSessions.length} buổi): {formatVND(totalFee)}
+                      </span>
+                      <span>
+                        {adjustmentType === '-' ? 'Trừ' : 'Cộng'}: {adjustmentReason ? `(${adjustmentReason})` : ''} {adjustmentType} {formatVND(adjustmentAmount)}
+                      </span>
+                      <span>
+                        TỔNG THANH TOÁN: {formatVND(finalAmount)}
+                      </span>
+                    </div>
+                  </td>
+                </tr>
               ) : (
-                <tr className="border-t-2 border-slate-400 bg-slate-50 font-bold text-slate-900">
+                <tr className="border-t-2 border-slate-400 bg-slate-50 text-xs font-bold text-slate-900">
                   <td colSpan={selectedStudent === 'all' ? 3 : 2} className="py-2 px-2 text-right uppercase border-r border-slate-300">
                     Tổng: {filteredSessions.length} buổi
                   </td>
-                  <td colSpan={2} className="py-2 px-2 text-left font-extrabold text-blue-700 text-sm">
+                  <td colSpan={2} className="py-2 px-2 text-left font-bold text-blue-700">
                     {formatVND(totalFee)}
                   </td>
                 </tr>
