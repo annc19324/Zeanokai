@@ -149,7 +149,7 @@ export default function SessionModal({
             <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-blue-600" />
-                <span>Thứ ngày tháng năm *</span>
+                <span>Ngày *</span>
               </span>
               {dayOfWeek && (
                 <span className="text-xs font-bold text-blue-600">
@@ -170,7 +170,7 @@ export default function SessionModal({
             <div className="flex items-center justify-between mb-1">
               <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
                 <DollarSign className="w-3.5 h-3.5 text-blue-600" />
-                <span>Số tiền 1 buổi</span>
+                <span>HP/buổi</span>
               </label>
               <span className="text-xs font-bold text-blue-600">
                 {formatVND(fee)}

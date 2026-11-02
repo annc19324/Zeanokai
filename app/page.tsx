@@ -34,7 +34,7 @@ export default function Home() {
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [isAutoModalOpen, setIsAutoModalOpen] = useState(false);
 
-  // Khởi tạo mặc định là tháng trước tháng hiện tại
+  // Khởi tạo mặc định là tháng trước tháng hiện tại & tự động đồng bộ buổi học hôm nay nếu có lịch
   useEffect(() => {
     const defaultMonthInfo = getPreviousMonthInfo();
     setFilter((prev) => ({
@@ -43,6 +43,17 @@ export default function Home() {
       year: defaultMonthInfo.year,
     }));
     setIsClientReady(true);
+
+    // Tự động kiểm tra và cập nhật buổi học hôm nay nếu trùng lịch cố định đã cài đặt
+    fetch('/api/schedules/sync-today', { method: 'POST' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.addedCount > 0) {
+          fetchSessions();
+          fetchStudentList();
+        }
+      })
+      .catch((err) => console.error('Auto sync today error:', err));
   }, []);
 
   // Tải danh sách tên học sinh để lọc
