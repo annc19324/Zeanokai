@@ -215,21 +215,21 @@ export default function PrintReportModal({
                   <td colSpan={selectedStudent === 'all' ? 5 : 4} className="py-2.5 px-3">
                     <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-bold">
                       <span>
-                        Tổng học phí ({filteredSessions.length} buổi): {formatVND(totalFee)}
+                        Tổng HP ({filteredSessions.length} buổi): {formatVND(totalFee)}
                       </span>
                       <span>
                         {adjustmentType === '-' ? 'Trừ' : 'Cộng'}{adjustmentReason ? ` (${adjustmentReason})` : ''}: {adjustmentType} {formatVND(adjustmentAmount)}
                       </span>
                       <span>
-                        TỔNG THANH TOÁN: {formatVND(finalAmount)}
+                        Tổng HP: {formatVND(finalAmount)}
                       </span>
                     </div>
                   </td>
                 </tr>
               ) : (
                 <tr className="border-t-2 border-slate-400 bg-slate-50 text-xs font-bold text-slate-900">
-                  <td colSpan={selectedStudent === 'all' ? 3 : 2} className="py-2 px-2 text-right uppercase border-r border-slate-300">
-                    Tổng: {filteredSessions.length} buổi
+                  <td colSpan={selectedStudent === 'all' ? 3 : 2} className="py-2 px-2 text-right border-r border-slate-300">
+                    Tổng HP ({filteredSessions.length} buổi):
                   </td>
                   <td colSpan={2} className="py-2 px-2 text-left font-bold text-blue-700">
                     {formatVND(totalFee)}

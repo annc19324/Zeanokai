@@ -94,8 +94,8 @@ export default function SessionTable({
           </tbody>
           <tfoot>
             <tr className="border-t-2 border-slate-300 bg-slate-50 font-bold text-slate-900 text-xs sm:text-sm">
-              <td colSpan={3} className="py-2.5 px-3 text-right uppercase text-xs">
-                Tổng: <span className="text-blue-600 font-extrabold ml-1">{totalSessions}</span> buổi
+              <td colSpan={3} className="py-2.5 px-3 text-right text-xs">
+                Tổng HP (<span className="text-blue-600 font-extrabold">{totalSessions}</span> buổi):
               </td>
               <td colSpan={3} className="py-2.5 px-3 text-left text-blue-700 font-extrabold text-sm sm:text-base">
                 {formatVND(totalFee)}
